@@ -23,28 +23,30 @@
     <main>
       <form action="" id="newAccount">
         New Account:
-        <input type="text" />
+        <input id="accountInfo" type="text" />
         <button>Add new account</button>
       </form>
       <form action="">
         New Transaction: Deposit
-        <input type="radio" />
+        <input type="radio" class="radioBtn" value="Deposit" />
         Withdraw
-        <input type="radio" />
+        <input type="radio" class="radioBtn" value="Withdraw" />
         Transfer
-        <input type="radio" />
+        <input type="radio" class="radioBtn" value="Transfer" />
         Account:
-        <select></select>
+        <select class="selectTag"></select>
 
         From:
-        <select></select>
+        <select class="selectTag" id="fromSelect"></select>
 
         To:
-        <select></select>
+        <select class="selectTag" id="toSelect"></select>
         Category:
-        <select></select>
-        <input type="text" />
-        <button type="button">Add new category</button>
+        <select id="categorySelect"></select>
+        <input type="text" class="categorySec" id="categoryInput" />
+        <button type="button" class="categorySec" id="addCategoryBtn">
+          Add new category
+        </button>
 
         Description
         <input type="text" />
@@ -56,9 +58,9 @@
       </form>
 
       Account summary
-      <ul></ul>
+      <ul id="accountSummary"></ul>
       Filter by account:
-      <select></select>
+      <select class="selectTag" id="accountSelect"></select>
       <table>
         <tr>
           <th>Id</th>
