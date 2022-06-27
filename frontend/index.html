@@ -26,7 +26,7 @@
         <input id="accountInfo" type="text" />
         <button>Add new account</button>
       </form>
-      <form action="">
+      <form action="" id="transactionForm">
         New Transaction: Deposit
         <input type="radio" class="radioBtn" value="Deposit" />
         Withdraw
@@ -34,7 +34,7 @@
         Transfer
         <input type="radio" class="radioBtn" value="Transfer" />
         Account:
-        <select class="selectTag"></select>
+        <select class="selectTag" id="currentAccount"></select>
 
         From:
         <select class="selectTag" id="fromSelect"></select>
@@ -49,10 +49,10 @@
         </button>
 
         Description
-        <input type="text" />
+        <input type="text" id="description" />
 
         Amount:
-        <input type="number" />
+        <input type="number" id="amount" />
 
         <button>Add transaction</button>
       </form>
@@ -61,7 +61,7 @@
       <ul id="accountSummary"></ul>
       Filter by account:
       <select class="selectTag" id="accountSelect"></select>
-      <table>
+      <table id="transactionTable">
         <tr>
           <th>Id</th>
           <th>Username</th>
