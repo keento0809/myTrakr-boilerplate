@@ -10,7 +10,10 @@ $(() => {
       url: "http://localhost:3000/accounts",
       dataType: "json",
     }).done((data) => {
+      // test
       $(".selectTag").append(new Option("select"));
+      $("#accountSelect").empty();
+      $("#accountSelect").append(new Option("all"));
       users = [];
       $.each(data, (i, user) => {
         let currentBalance = 0;
@@ -46,15 +49,31 @@ $(() => {
     });
     $(".categorySec").hide();
 
-    // $.ajax({
-    //   method: "get",
-    //   url: "http://localhost:3000/transactions",
-    //   dataType: "json",
-    // }).done((data) => {
-    //   $.each(data, (i, transaction) => {
-    //     console.log(transaction);
-    //   });
-    // });
+    $.ajax({
+      method: "get",
+      url: "http://localhost:3000/transactions",
+      dataType: "json",
+    }).done((data) => {
+      console.log(data, data.length);
+      data.length > 0 &&
+        $.each(data, (i, transactionData) => {
+          console.log(transactionData);
+          if (data && transactionData.length > 0) {
+            $("#transactionTable").append(`
+            <tr>
+            <th>${transactionData[0].accountId}</th>
+            <th>${transactionData[0].username}</th>
+            <th>${transactionData[0].transactionType}</th>
+            <th>${transactionData[0].category}</th>
+            <th>${transactionData[0].description}</th>
+            <th>${transactionData[0].amount}</th>
+            <th>${transactionData[0].from}</th>
+            <th>${transactionData[0].to}</th>
+          </tr>
+            `);
+          }
+        });
+    });
   });
 
   $("#amount").on("keyup", function () {
@@ -62,16 +81,20 @@ $(() => {
   });
 
   $(".radioBtn").on("change", function () {
+    // test
+    $(".radioBtn").prop("checked", false);
     console.log($(this).val());
     if ($(this).val() === "Deposit" || $(this).val() === "Withdraw") {
-      $("#accountSelect").show();
+      $("#currentAccount").show();
       $("#fromSelect").hide();
       $("#toSelect").hide();
     } else {
-      $("#accountSelect").hide();
+      $("#currentAccount").hide();
       $("#fromSelect").show();
       $("#toSelect").show();
     }
+    // test
+    $(this).prop("checked", true);
     transactionType = $(this).val();
   });
 
@@ -192,11 +215,25 @@ $(() => {
 
   $("#transactionForm").on("submit", function (e) {
     e.preventDefault();
+
+    if (
+      $("#currentAccount").val() === "" ||
+      $("#currentAccount").val() === "select" ||
+      $("#categorySelect").val() === "" ||
+      $("#categorySelect").val() === "select" ||
+      $("#categorySelect").val() === "" ||
+      $("#amount").val("") <= 0
+    ) {
+      alert("Invalid transaction");
+      return;
+    }
+
     let currentUserId;
     let fromUserId;
     let toUserId;
 
     for (let i = 0; i < users.length; i++) {
+      console.log(users[i]);
       if (users[i].username == $("#currentAccount").val()) {
         currentUserId = users[i].id;
       }
@@ -207,6 +244,7 @@ $(() => {
         toUserId = users[i].id;
       }
     }
+    console.log(currentUserId);
     const newTransactionObj = {
       accountId: currentUserId, // account ID for Deposits or Withdraws
       accountIdFrom: transactionType === "Transfer" ? fromUserId : null, // sender ID if type = 'Transfer', otherwise null
@@ -233,6 +271,7 @@ $(() => {
       dataType: "json",
       contentType: "application/json; charset=utf-8",
     }).done((data) => {
+      console.log(data.length, data, "obj: ", newTransactionObj);
       const transactionUser = users.find(
         (user) => user.id === newTransactionObj.accountId
       );

@@ -29,6 +29,7 @@ class Transfer extends Transaction {
     this.accountIdTo = accountIdTo;
   }
   commitTransfer() {
-    console.log(this.accountIdFrom, "jijjijijij");
+    if (this.value < 0 && this.amount > this.account.balance) return;
+    console.log("YEAH");
   }
 }
