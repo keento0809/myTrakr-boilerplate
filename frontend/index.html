@@ -19,42 +19,89 @@
     <link rel="stylesheet" href="./css/index.css" />
   </head>
   <body>
-    myTrakr
+    <h1 class="display-6">myTrakr</h1>
     <main>
-      <form action="" id="newAccount">
-        New Account:
+      <form action="" id="newAccount" class="text-primary py-4">
+        <!-- New Account:
         <input id="accountInfo" type="text" />
-        <button>Add new account</button>
+        <button>Add new account</button> -->
+        <div class="form-group">
+          <label for="accountInfo">New Account: </label>
+          <input
+            type="text"
+            class="form-control"
+            id="accountInfo"
+            aria-describedby="emailHelp"
+            placeholder="Enter name"
+          />
+        </div>
+        <button type="submit" class="rounded-2 btn btn-primary">
+          Add new account
+        </button>
       </form>
-      <form action="" id="transactionForm">
-        New Transaction: Deposit
-        <input type="radio" class="radioBtn" value="Deposit" />
-        Withdraw
-        <input type="radio" class="radioBtn" value="Withdraw" />
-        Transfer
-        <input type="radio" class="radioBtn" value="Transfer" />
-        Account:
-        <select class="selectTag" id="currentAccount"></select>
+      <form action="" id="transactionForm" class="py-4">
+        <div class="form-group">
+          <p for="" class="text-primary">New Transaction:</p>
+          Deposit
+          <input type="radio" class="radioBtn" value="Deposit" />
+          Withdraw
+          <input type="radio" class="radioBtn" value="Withdraw" />
+          Transfer
+          <input type="radio" class="radioBtn" value="Transfer" />
+        </div>
 
-        From:
-        <select class="selectTag" id="fromSelect"></select>
+        <div class="form-group">
+          <label
+            for="currentAccount"
+            id="currentAccountLabel"
+            class="text-primary"
+          >
+            Account:
+          </label>
+          <select class="selectTag form-control" id="currentAccount"></select>
+          <label for="fromSelect" id="fromSelectLabel" class="text-primary"
+            >From:
+          </label>
+          <select
+            class="selectTag form-control"
+            aria-label="Default select example"
+            id="fromSelect"
+          ></select>
+          <label for="toSelect" id="toSelectLabel" class="text-primary"
+            >To:
+          </label>
+          <select class="selectTag form-control" id="toSelect"></select>
+          <label for="categorySelect" class="text-primary"> Category: </label>
+          <select id="categorySelect" class="form-control"></select>
+        </div>
 
-        To:
-        <select class="selectTag" id="toSelect"></select>
-        Category:
-        <select id="categorySelect"></select>
+        <!-- Category: -->
         <input type="text" class="categorySec" id="categoryInput" />
         <button type="button" class="categorySec" id="addCategoryBtn">
           Add new category
         </button>
 
-        Description
-        <input type="text" id="description" />
+        <div class="form-group">
+          <label for="" class="text-primary"> Description: </label>
+          <input
+            type="text"
+            id="description"
+            class="form-control"
+            placeholder="Enter description"
+          />
+        </div>
 
-        Amount:
-        <input type="number" id="amount" />
+        <div class="form-group">
+          <label for="" class="text-primary"> Amount: </label>
+          <input
+            type="number"
+            id="amount"
+            class="form-control"
+            placeholder="Enter amount"
+          />
+        </div>
 
-        <button>Add transaction</button>
+        <button class="rounded-2 btn btn-primary">Add transaction</button>
       </form>
 
       Account summary

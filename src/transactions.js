@@ -19,20 +19,9 @@ export const addTransaction = (transaction) => {
       if (account.id == transaction.accountIdTo) {
         newTransaction.accountId = transaction.accountIdTo;
       }
-      // test
-      if (transaction.transactionType === "Transfer") {
-        console.log("Y", newTransaction.amount, account);
-        account.transactions.push(newTransaction);
-        newTransactions.push(newTransaction);
-      } else {
-        console.log("N");
-        account.transactions.push(newTransaction);
-        newTransactions.push(newTransaction);
-      }
-
       // original
-      // account.transactions.push(newTransaction);
-      // newTransactions.push(newTransaction);
+      account.transactions.push(newTransaction);
+      newTransactions.push(newTransaction);
     }
   });
   return newTransactions;

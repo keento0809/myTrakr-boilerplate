@@ -86,12 +86,18 @@ $(() => {
     console.log($(this).val());
     if ($(this).val() === "Deposit" || $(this).val() === "Withdraw") {
       $("#currentAccount").show();
+      $("#currentAccountLabel").show();
       $("#fromSelect").hide();
       $("#toSelect").hide();
+      $("#fromSelectLabel").hide();
+      $("#toSelectLabel").hide();
     } else {
       $("#currentAccount").hide();
+      $("#currentAccountLabel").hide();
       $("#fromSelect").show();
       $("#toSelect").show();
+      $("#fromSelectLabel").show();
+      $("#toSelectLabel").show();
     }
     // test
     $(this).prop("checked", true);
@@ -255,10 +261,7 @@ $(() => {
       $("#categorySelect").val() === "select" ||
       $("#categorySelect").val() === "" ||
       $("#amount").val() <= 0 ||
-      $("#amount").val() === "" // ||
-      // (transactionType === "Transfer" && $("#fromSelect").val() === "select") ||
-      // $("#toSelect").val() === "select" ||
-      // $("#fromSelect").val() === $("#toSelect").val()
+      $("#amount").val() === ""
     ) {
       alert("Invalid transaction");
       return;
@@ -319,40 +322,6 @@ $(() => {
       return;
     }
 
-    const transactionUser =
-      newTransactionObj.transactionType === "Deposit" ||
-      newTransactionObj.transactionType === "Withdraw"
-        ? users.find((user) => user.id === newTransactionObj.accountId)
-        : "";
-
-    switch (newTransactionObj.transactionType) {
-      case "Deposit": {
-        // const newTrans = new Deposit(newTransactionObj.amount, transactionUser);
-        // newTrans.commit();
-        break;
-      }
-      case "Withdraw": {
-        console.log("withdrawing~~~~");
-        // const newTrans = new Withdrawal(
-        //   newTransactionObj.amount,
-        //   transactionUser
-        // );
-        // newTrans.commit();
-        break;
-      }
-      case "Transfer": {
-        console.log("Boo");
-        // const newT = new Transfer(
-        //   newTransactionObj.accountIdFrom,
-        //   newTransactionObj.accountIdTo
-        //   // newTransactionObj.amount
-        // );
-        // newT.commitTransfer();
-        break;
-      }
-    }
-    console.log(newTransactionObj);
-
     $.ajax({
       method: "POST",
       url: "http://localhost:3000/transaction",
@@ -380,63 +349,32 @@ $(() => {
           $("#accountSummary").append(`
           <div>
             <span>${user.username}</span>
-            <span>${
-              // original
-              // user.transactions.length === 0 ? 0 : user.transactions[0].amount
-              user.transactions.length === 0 ? 0 : currentBalance
-            }</span>
+            <span>${user.transactions.length === 0 ? 0 : currentBalance}</span>
           </div>
         `);
         });
         console.log(users);
       });
-      // if (
-      //   $("#categorySelect").val() !== "select" &&
-      //   $("#categorySelect").val() !== "select" &&
-      //   $("#fromSelect").val() !== "select" &&
-      //   $("#toSelect").val() !== "select"
-      // ) {
-      // transactionUser.transactions.push({
-      //   accountId: data[0].accountId,
-      //   accountIdFrom: data[0].accountIdFrom,
-      //   accountIdTo: data[0].accountIdTo,
-      //   username: data[0].username,
-      //   transactionType: data[0].transactionType,
-      //   category: data[0].category,
-      //   description: data[0].description,
-      //   amount: data[0].amount,
-      //   from: data[0].from,
-      //   to: data[0].to,
-      // });
-      // console.log(data, data[0].amount);
-      // data[0].amount = -data[0].amount;
-      // console.log(data[0].amount);
-      $("#transactionTable").append(`
-        <tr>
-        <th>${data[0].accountId}</th>
-        <th>${data[0].username}</th>
-        <th>${data[0].transactionType}</th>
-        <th>${data[0].category}</th>
-        <th>${data[0].description}</th>
-        <th>${data[0].amount}</th>
-        <th>${data[0].from}</th>
-        <th>${data[0].to}</th>
-      </tr>
-        `);
-      if (data[0].transactionType === "Transfer") {
+
+      const details = data;
+
+      // test
+      $.each(details, (i, data) => {
         $("#transactionTable").append(`
         <tr>
-        <th>${data[1].accountId}</th>
-        <th>${data[1].username}</th>
-        <th>${data[1].transactionType}</th>
-        <th>${data[1].category}</th>
-        <th>${data[1].description}</th>
-        <th>${data[1].amount}</th>
-        <th>${data[1].from}</th>
-        <th>${data[1].to}</th>
+        <th>${data.accountId}</th>
+        <th>${data.username}</th>
+        <th>${data.transactionType}</th>
+        <th>${data.category}</th>
+        <th>${data.description}</th>
+        <th>${data.amount}</th>
+        <th>${data.from}</th>
+        <th>${data.to}</th>
       </tr>
+      })
         `);
-      }
+      });
+
       $("#currentAccount").val("select");
       $("#categorySelect").val("select");
       $("#categorySelect").val("select");
