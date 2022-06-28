@@ -1,4 +1,4 @@
-import { getAccounts } from './accounts.js';
+import { getAccounts } from "./accounts.js";
 
 let transactionCounter = 0;
 export const addTransaction = (transaction) => {
@@ -14,12 +14,25 @@ export const addTransaction = (transaction) => {
       let newTransaction = { ...transaction, id: transactionCounter };
       if (account.id == transaction.accountIdFrom) {
         newTransaction.accountId = transaction.accountIdFrom;
+        newTransaction.amount = -transaction.amount;
       }
       if (account.id == transaction.accountIdTo) {
         newTransaction.accountId = transaction.accountIdTo;
       }
-      account.transactions.push(newTransaction);
-      newTransactions.push(newTransaction);
+      // test
+      if (transaction.transactionType === "Transfer") {
+        console.log("Y", newTransaction.amount, account);
+        account.transactions.push(newTransaction);
+        newTransactions.push(newTransaction);
+      } else {
+        console.log("N");
+        account.transactions.push(newTransaction);
+        newTransactions.push(newTransaction);
+      }
+
+      // original
+      // account.transactions.push(newTransaction);
+      // newTransactions.push(newTransaction);
     }
   });
   return newTransactions;

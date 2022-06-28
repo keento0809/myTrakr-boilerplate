@@ -1,7 +1,6 @@
 $(() => {
   //Start coding here!
   let users = [];
-  const categories = [];
   let transactionType = "";
 
   $(document).ready(() => {
@@ -20,6 +19,7 @@ $(() => {
         for (let i = 0; i < user.transactions.length; i++) {
           currentBalance += Number(user.transactions[i].amount);
         }
+        user.currentBalance = currentBalance;
         users.push(user);
         $(".selectTag").append(new Option(user.username));
         $("#accountSummary").append(`
@@ -54,30 +54,30 @@ $(() => {
       url: "http://localhost:3000/transactions",
       dataType: "json",
     }).done((data) => {
-      console.log(data, data.length);
+      const newData = [];
+      if (data.length > 0) {
+        for (const key in data) {
+          for (let i = 0; i < data[key].length; i++) {
+            newData.push(data[key][i]);
+          }
+        }
+      }
       data.length > 0 &&
-        $.each(data, (i, transactionData) => {
-          console.log(transactionData);
-          if (data && transactionData.length > 0) {
-            $("#transactionTable").append(`
+        $.each(newData, (i, transactionData) => {
+          $("#transactionTable").append(`
             <tr>
-            <th>${transactionData[0].accountId}</th>
-            <th>${transactionData[0].username}</th>
-            <th>${transactionData[0].transactionType}</th>
-            <th>${transactionData[0].category}</th>
-            <th>${transactionData[0].description}</th>
-            <th>${transactionData[0].amount}</th>
-            <th>${transactionData[0].from}</th>
-            <th>${transactionData[0].to}</th>
+            <th>${transactionData.accountId}</th>
+            <th>${transactionData.username}</th>
+            <th>${transactionData.transactionType}</th>
+            <th>${transactionData.category}</th>
+            <th>${transactionData.description}</th>
+            <th>${transactionData.amount}</th>
+            <th>${transactionData.from}</th>
+            <th>${transactionData.to}</th>
           </tr>
             `);
-          }
         });
     });
-  });
-
-  $("#amount").on("keyup", function () {
-    console.log($("#amount").val());
   });
 
   $(".radioBtn").on("change", function () {
@@ -144,23 +144,23 @@ $(() => {
         method: "POST",
         url: "http://localhost:3000/accounts",
         data: JSON.stringify({
-          // original
-          // newAccount: { username: inputVal, transactions: [] },
-          // test
           newAccount: testUser,
         }),
         dataType: "json",
         contentType: "application/json; charset=utf-8",
       }).done((data) => {
-        console.log(data);
+        // original
         // create new instance of Account
-        const newUser = new Account(data.username);
+        // const newUser = new Account(data.username);
         // original
         // $(".selectTag").append(new Option(inputVal));
+        // original
+        // users.push(newUser);
         // test
-        users.push(newUser);
+        console.log(data);
+        users.push(data);
         console.log(users);
-        $(".selectTag").append(new Option(newUser.username));
+        $(".selectTag").append(new Option(data.username));
         $("#accountSummary").append(`
         <div>
           <span>${inputVal}</span>
@@ -191,38 +191,74 @@ $(() => {
     `;
 
     $("#transactionTable").html(defaultHTML);
-    if ($("#accountSelect").val() === "select") {
-      return;
+    if ($("#accountSelect").val() === "all") {
+      $.ajax({
+        method: "get",
+        url: "http://localhost:3000/transactions",
+        dataType: "json",
+      }).done((data) => {
+        const newData = [];
+        if (data.length > 0) {
+          for (const key in data) {
+            console.log(data[key]);
+            for (let i = 0; i < data[key].length; i++) {
+              newData.push(data[key][i]);
+            }
+          }
+        }
+        data.length > 0 &&
+          $.each(newData, (i, transactionData) => {
+            $("#transactionTable").append(`
+              <tr>
+              <th>${transactionData.accountId}</th>
+              <th>${transactionData.username}</th>
+              <th>${transactionData.transactionType}</th>
+              <th>${transactionData.category}</th>
+              <th>${transactionData.description}</th>
+              <th>${transactionData.amount}</th>
+              <th>${transactionData.from}</th>
+              <th>${transactionData.to}</th>
+            </tr>
+              `);
+          });
+      });
+    } else {
+      const selectedUser = users.find(
+        (user) => user.username === $("#accountSelect").val()
+      );
+      // original
+      $.each(selectedUser.transactions, (i, data) => {
+        $("#transactionTable").append(`
+            <tr>
+            <th>${data.accountId}</th>
+            <th>${data.username}</th>
+            <th>${data.transactionType}</th>
+            <th>${data.category}</th>
+            <th>${data.description}</th>
+            <th>${data.amount}</th>
+            <th>${data.from}</th>
+            <th>${data.to}</th>
+          </tr>
+            `);
+      });
     }
-    const selectedUser = users.find(
-      (user) => user.username === $("#accountSelect").val()
-    );
-    $.each(selectedUser.transactions, (i, data) => {
-      $("#transactionTable").append(`
-          <tr>
-          <th>${data.accountId}</th>
-          <th>${data.username}</th>
-          <th>${data.transactionType}</th>
-          <th>${data.category}</th>
-          <th>${data.description}</th>
-          <th>${data.amount}</th>
-          <th>${data.from}</th>
-          <th>${data.to}</th>
-        </tr>
-          `);
-    });
   });
 
   $("#transactionForm").on("submit", function (e) {
     e.preventDefault();
 
     if (
-      $("#currentAccount").val() === "" ||
-      $("#currentAccount").val() === "select" ||
+      (transactionType !== "Transfer" && $("#currentAccount").val() === "") ||
+      (transactionType !== "Transfer" &&
+        $("#currentAccount").val() === "select") ||
       $("#categorySelect").val() === "" ||
       $("#categorySelect").val() === "select" ||
       $("#categorySelect").val() === "" ||
-      $("#amount").val("") <= 0
+      $("#amount").val() <= 0 ||
+      $("#amount").val() === "" // ||
+      // (transactionType === "Transfer" && $("#fromSelect").val() === "select") ||
+      // $("#toSelect").val() === "select" ||
+      // $("#fromSelect").val() === $("#toSelect").val()
     ) {
       alert("Invalid transaction");
       return;
@@ -244,13 +280,14 @@ $(() => {
         toUserId = users[i].id;
       }
     }
-    console.log(currentUserId);
+
     const newTransactionObj = {
-      accountId: currentUserId, // account ID for Deposits or Withdraws
+      accountId: transactionType !== "Transfer" ? currentUserId : "", // account ID for Deposits or Withdraws
       accountIdFrom: transactionType === "Transfer" ? fromUserId : null, // sender ID if type = 'Transfer', otherwise null
       accountIdTo: transactionType === "Transfer" ? toUserId : null, // receiver ID if type = 'Transfer', otherwise null
-      id: currentUserId,
-      username: $("#currentAccount").val(),
+      id: transactionType !== "Transfer" ? currentUserId : "",
+      username:
+        transactionType === "Transfer" ? "" : $("#currentAccount").val(),
       transactionType: transactionType,
       category: $("#categorySelect").val(),
       description: $("#description").val(),
@@ -261,7 +298,61 @@ $(() => {
       from: transactionType === "Transfer" ? $("#fromSelect").val() : "",
       to: transactionType === "Transfer" ? $("#toSelect").val() : "",
     };
-    console.log(newTransactionObj.amount);
+
+    const currUser = users.find(
+      (user) => user.id === newTransactionObj.accountId
+    );
+    let fromUser;
+    if (transactionType === "Transfer") {
+      fromUser = users.find(
+        (user) => user.id === newTransactionObj.accountIdFrom
+      );
+    }
+
+    if (
+      (transactionType === "Withdraw" &&
+        $("#amount").val() > currUser.currentBalance) ||
+      (transactionType === "Transfer" &&
+        $("#amount").val() > fromUser.currentBalance)
+    ) {
+      alert("Cannot withdraw more than the amount in your account.");
+      return;
+    }
+
+    const transactionUser =
+      newTransactionObj.transactionType === "Deposit" ||
+      newTransactionObj.transactionType === "Withdraw"
+        ? users.find((user) => user.id === newTransactionObj.accountId)
+        : "";
+
+    switch (newTransactionObj.transactionType) {
+      case "Deposit": {
+        // const newTrans = new Deposit(newTransactionObj.amount, transactionUser);
+        // newTrans.commit();
+        break;
+      }
+      case "Withdraw": {
+        console.log("withdrawing~~~~");
+        // const newTrans = new Withdrawal(
+        //   newTransactionObj.amount,
+        //   transactionUser
+        // );
+        // newTrans.commit();
+        break;
+      }
+      case "Transfer": {
+        console.log("Boo");
+        // const newT = new Transfer(
+        //   newTransactionObj.accountIdFrom,
+        //   newTransactionObj.accountIdTo
+        //   // newTransactionObj.amount
+        // );
+        // newT.commitTransfer();
+        break;
+      }
+    }
+    console.log(newTransactionObj);
+
     $.ajax({
       method: "POST",
       url: "http://localhost:3000/transaction",
@@ -271,27 +362,6 @@ $(() => {
       dataType: "json",
       contentType: "application/json; charset=utf-8",
     }).done((data) => {
-      console.log(data.length, data, "obj: ", newTransactionObj);
-      const transactionUser = users.find(
-        (user) => user.id === newTransactionObj.accountId
-      );
-      switch (newTransactionObj.transactionType) {
-        case "Deposit": {
-          const newTrans = new Deposit(data[0].amount, transactionUser);
-          newTrans.commit();
-          break;
-        }
-        case "Withdraw": {
-          const newTrans = new Withdrawal(data[0].amount, transactionUser);
-          newTrans.commit();
-          break;
-        }
-        case "Transfer": {
-          newTrans.commitTransfer();
-          break;
-        }
-      }
-
       // test
       $.ajax({
         method: "get",
@@ -305,6 +375,7 @@ $(() => {
           for (let i = 0; i < user.transactions.length; i++) {
             currentBalance += Number(user.transactions[i].amount);
           }
+          user.currentBalance = currentBalance;
           users.push(user);
           $("#accountSummary").append(`
           <div>
@@ -337,6 +408,9 @@ $(() => {
       //   from: data[0].from,
       //   to: data[0].to,
       // });
+      // console.log(data, data[0].amount);
+      // data[0].amount = -data[0].amount;
+      // console.log(data[0].amount);
       $("#transactionTable").append(`
         <tr>
         <th>${data[0].accountId}</th>
@@ -349,12 +423,28 @@ $(() => {
         <th>${data[0].to}</th>
       </tr>
         `);
+      if (data[0].transactionType === "Transfer") {
+        $("#transactionTable").append(`
+        <tr>
+        <th>${data[1].accountId}</th>
+        <th>${data[1].username}</th>
+        <th>${data[1].transactionType}</th>
+        <th>${data[1].category}</th>
+        <th>${data[1].description}</th>
+        <th>${data[1].amount}</th>
+        <th>${data[1].from}</th>
+        <th>${data[1].to}</th>
+      </tr>
+        `);
+      }
+      $("#currentAccount").val("select");
       $("#categorySelect").val("select");
       $("#categorySelect").val("select");
       $("#fromSelect").val("select");
       $("#toSelect").val("select");
       $("#description").val("");
       $("#amount").val("");
+      $(".radioBtn").prop("checked", false);
     });
   });
 });

@@ -43,7 +43,6 @@ app.post("/transaction", (req, res) => {
   }
   const newTransactions = addTransaction(req.body.newTransaction);
   res.status(201).json(newTransactions);
-  // console.log('new transaction', newTransaction);
 });
 
 // read categories
