@@ -23,14 +23,15 @@ $(() => {
         users.push(user);
         $(".selectTag").append(new Option(user.username));
         $("#accountSummary").append(`
-        <div>
+        <li class="list-group-item">
+          <span>Name: </span>
           <span>${user.username}</span>
           <span>${
             // original
             // user.transactions.length === 0 ? 0 : user.transactions[0].amount
             user.transactions.length === 0 ? 0 : currentBalance
           }</span>
-        </div>
+        </li>
       `);
       });
       console.log(users);
@@ -65,7 +66,7 @@ $(() => {
       data.length > 0 &&
         $.each(newData, (i, transactionData) => {
           $("#transactionTable").append(`
-            <tr>
+            <tr scope="row">
             <th>${transactionData.accountId}</th>
             <th>${transactionData.username}</th>
             <th>${transactionData.transactionType}</th>
@@ -168,10 +169,10 @@ $(() => {
         console.log(users);
         $(".selectTag").append(new Option(data.username));
         $("#accountSummary").append(`
-        <div>
+        <li class="list-group-item">
           <span>${inputVal}</span>
           <span>0</span>
-        </div>
+        </li>
         `);
       });
     $("#accountInfo").val("");
@@ -215,7 +216,7 @@ $(() => {
         data.length > 0 &&
           $.each(newData, (i, transactionData) => {
             $("#transactionTable").append(`
-              <tr>
+              <tr scope="row">
               <th>${transactionData.accountId}</th>
               <th>${transactionData.username}</th>
               <th>${transactionData.transactionType}</th>
@@ -235,7 +236,7 @@ $(() => {
       // original
       $.each(selectedUser.transactions, (i, data) => {
         $("#transactionTable").append(`
-            <tr>
+            <tr scope="row">
             <th>${data.accountId}</th>
             <th>${data.username}</th>
             <th>${data.transactionType}</th>
@@ -347,10 +348,10 @@ $(() => {
           user.currentBalance = currentBalance;
           users.push(user);
           $("#accountSummary").append(`
-          <div>
+          <li class="list-group-item">
             <span>${user.username}</span>
             <span>${user.transactions.length === 0 ? 0 : currentBalance}</span>
-          </div>
+          </li>
         `);
         });
         console.log(users);
@@ -361,7 +362,7 @@ $(() => {
       // test
       $.each(details, (i, data) => {
         $("#transactionTable").append(`
-        <tr>
+        <tr scope="row">
         <th>${data.accountId}</th>
         <th>${data.username}</th>
         <th>${data.transactionType}</th>
@@ -384,5 +385,37 @@ $(() => {
       $("#amount").val("");
       $(".radioBtn").prop("checked", false);
     });
+  });
+
+  // jQuery regarding css accordionBtnForTransac
+  $("#accordionBtn").on("click", function () {
+    $("#toggleNewAccountForm").toggle();
+    $("#accordionBtn").toggleClass("hidden");
+    $("#upBtnNewAccount").toggleClass("hidden");
+  });
+  $("#upBtnNewAccount").on("click", function () {
+    $("#toggleNewAccountForm").toggle();
+    $("#accordionBtn").toggleClass("hidden");
+    $("#upBtnNewAccount").toggleClass("hidden");
+  });
+  $("#accordionBtnForTransac").on("click", function () {
+    $("#toggleTransac").toggle();
+    $("#accordionBtnForTransac").toggleClass("hidden");
+    $("#upBtnTransac").toggleClass("hidden");
+  });
+  $("#upBtnTransac").on("click", function () {
+    $("#toggleTransac").toggle();
+    $("#accordionBtnForTransac").toggleClass("hidden");
+    $("#upBtnTransac").toggleClass("hidden");
+  });
+  $("#accordionBtnForSummary").on("click", function () {
+    $("#toggleSummary").toggle();
+    $("#accordionBtnForSummary").toggleClass("hidden");
+    $("#upBtnSummary").toggleClass("hidden");
+  });
+  $("#upBtnSummary").on("click", function () {
+    $("#toggleSummary").toggle();
+    $("#accordionBtnForSummary").toggleClass("hidden");
+    $("#upBtnSummary").toggleClass("hidden");
   });
 });
