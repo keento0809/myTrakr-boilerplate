@@ -56,6 +56,7 @@ $(() => {
       dataType: "json",
     }).done((data) => {
       const newData = [];
+      console.log(newData);
       if (data.length > 0) {
         for (const key in data) {
           for (let i = 0; i < data[key].length; i++) {
