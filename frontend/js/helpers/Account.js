@@ -6,7 +6,10 @@ class Account {
 
   get balance() {
     return this.transactions.reduce((total, transaction) => {
-      return total + transaction;
+      // original
+      // return total + transaction;
+      // test
+      return total + Number(transaction.amount);
     }, 0);
   }
 }

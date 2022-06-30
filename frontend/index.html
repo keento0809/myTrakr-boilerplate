@@ -15,63 +15,205 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
+    <!-- <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+      crossorigin="anonymous"
+    ></script> -->
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/index.css" />
   </head>
   <body>
-    myTrakr
-    <main>
-      <form action="">
-        New Account:
-        <input type="text" />
-        <button>Add new account</button>
+    <header class="py-2 bg-info text-white">
+      <div class="container">
+        <h1 class="display-6">myTrakr</h1>
+      </div>
+    </header>
+    <main class="container">
+      <form action="" id="newAccount" class="text-primary py-4">
+        <!-- New Account:
+        <input id="accountInfo" type="text" />
+        <button>Add new account</button> -->
+        <div class="form-group">
+          <div class="d-flex justify-content-between align-items-center">
+            <label for="accountInfo" class="h4 pb-3 text-dark"
+              >New Account:
+            </label>
+            <ion-icon
+              name="chevron-down-outline"
+              class="text-primary hidden"
+              id="accordionBtn"
+            ></ion-icon>
+            <ion-icon
+              name="chevron-up-outline"
+              class="text-primary"
+              id="upBtnNewAccount"
+            ></ion-icon>
+          </div>
+          <div id="toggleNewAccountForm">
+            <input
+              type="text"
+              class="form-control mb-3"
+              id="accountInfo"
+              aria-describedby="emailHelp"
+              placeholder="Enter name"
+            />
+            <button type="submit" class="rounded-2 btn btn-primary">
+              Add new account
+            </button>
+          </div>
+        </div>
       </form>
-      <form action="">
-        New Transaction: Deposit
-        <input type="radio" />
-        Withdraw
-        <input type="radio" />
-        Transfer
-        <input type="radio" />
-        Account:
-        <select></select>
+      <form action="" id="transactionForm" class="py-4">
+        <div class="pb-3 d-flex justify-content-between align-items-center">
+          <h4 for="" class="text-dark">New Transaction:</h4>
+          <ion-icon
+            name="chevron-down-outline"
+            class="text-primary hidden"
+            id="accordionBtnForTransac"
+          ></ion-icon>
+          <ion-icon
+            name="chevron-up-outline"
+            class="text-primary"
+            id="upBtnTransac"
+          ></ion-icon>
+        </div>
+        <div id="toggleTransac">
+          <div class="form-group">
+            Deposit
+            <input type="radio" class="radioBtn" value="Deposit" />
+            Withdraw
+            <input type="radio" class="radioBtn" value="Withdraw" />
+            Transfer
+            <input type="radio" class="radioBtn" value="Transfer" />
+          </div>
 
-        From:
-        <select></select>
+          <div class="form-group">
+            <label
+              for="currentAccount"
+              id="currentAccountLabel"
+              class="text-primary"
+            >
+              Account:
+            </label>
+            <select class="selectTag form-control" id="currentAccount"></select>
+            <label
+              for="fromSelect"
+              id="fromSelectLabel"
+              class="text-primary pt-2"
+              >From:
+            </label>
+            <select
+              class="selectTag form-control"
+              aria-label="Default select example"
+              id="fromSelect"
+            ></select>
+            <label for="toSelect" id="toSelectLabel" class="text-primary pt-2"
+              >To:
+            </label>
+            <select class="selectTag form-control" id="toSelect"></select>
+            <label for="categorySelect" class="text-primary pt-2"
+              >Category:
+            </label>
+            <select id="categorySelect" class="form-control"></select>
+          </div>
 
-        To:
-        <select></select>
-        Category:
-        <select></select>
-        <input type="text" />
-        <button type="button">Add new category</button>
+          <!-- Category: -->
+          <div class="form-group">
+            <input
+              type="text"
+              class="categorySec form-control mb-3"
+              id="categoryInput"
+              placeholder="Enter new category"
+            />
+            <button
+              type="button"
+              class="categorySec rounded-2 btn btn-primary"
+              id="addCategoryBtn"
+            >
+              Add new category
+            </button>
+          </div>
 
-        Description
-        <input type="text" />
+          <div class="form-group">
+            <label for="" class="text-primary"> Description: </label>
+            <input
+              type="text"
+              id="description"
+              class="form-control"
+              placeholder="Enter description"
+            />
+          </div>
 
-        Amount:
-        <input type="number" />
+          <div class="form-group">
+            <label for="" class="text-primary"> Amount: </label>
+            <input
+              type="number"
+              id="amount"
+              class="form-control"
+              placeholder="Enter amount"
+            />
+          </div>
 
-        <button>Add transaction</button>
+          <button class="rounded-2 btn btn-primary">Add transaction</button>
+        </div>
       </form>
 
-      Account summary
-      <ul></ul>
-      Filter by account:
-      <select></select>
-      <table>
-        <tr>
-          <th>Id</th>
-          <th>Username</th>
-          <th>Transaction Type</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Amount</th>
-          <th>From</th>
-          <th>To</th>
-        </tr>
-      </table>
+      <div class="py-4">
+        <div class="pb-3 d-flex justify-content-between align-items-center">
+          <h4>Account summary:</h4>
+          <ion-icon
+            name="chevron-down-outline"
+            id="accordionBtnForSummary"
+            class="hidden text-primary"
+          ></ion-icon>
+          <ion-icon
+            name="chevron-up-outline"
+            class="text-primary"
+            id="upBtnSummary"
+          ></ion-icon>
+        </div>
+        <div id="toggleSummary">
+          <ul id="accountSummary" class="list-group py-2"></ul>
+          <div class="pt-2 pb-4">
+            <div class="py-4">
+              <span class="text-primary h5 py-2">Filter by account: </span>
+              <select class="selectTag needAllOpt" id="accountSelect"></select>
+            </div>
+            <div class="table-responsible"></div>
+            <div class="table-responsive">
+              <table id="transactionTable" class="table table-striped py-4">
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">Username</th>
+                  <th scope="col">Transaction Type</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">From</th>
+                  <th scope="col">To</th>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <ion-icon name="chevron-down-outline"></ion-icon> -->
     </main>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
     <script src="./js/helpers/Account.js"></script>
     <script src="./js/helpers/Category.js"></script>
     <script src="./js/helpers/Common.js"></script>

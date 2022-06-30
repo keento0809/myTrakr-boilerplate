@@ -1,4 +1,4 @@
-import { getAccounts } from './accounts.js';
+import { getAccounts } from "./accounts.js";
 
 let transactionCounter = 0;
 export const addTransaction = (transaction) => {
@@ -14,10 +14,12 @@ export const addTransaction = (transaction) => {
       let newTransaction = { ...transaction, id: transactionCounter };
       if (account.id == transaction.accountIdFrom) {
         newTransaction.accountId = transaction.accountIdFrom;
+        newTransaction.amount = -transaction.amount;
       }
       if (account.id == transaction.accountIdTo) {
         newTransaction.accountId = transaction.accountIdTo;
       }
+      // original
       account.transactions.push(newTransaction);
       newTransactions.push(newTransaction);
     }
