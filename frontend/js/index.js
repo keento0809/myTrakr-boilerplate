@@ -113,6 +113,10 @@ $(() => {
   });
 
   $("#addCategoryBtn").on("click", function () {
+    if ($("#categoryInput").val() === "") {
+      alert("Invalid category. input value must not be blank.");
+      return;
+    }
     const categoryInputVal = $("#categoryInput").val();
     categoryInputVal.length > 0 &&
       $.ajax({
@@ -293,7 +297,6 @@ $(() => {
     let toUserId;
 
     for (let i = 0; i < users.length; i++) {
-      console.log(users[i]);
       if (users[i].username == $("#currentAccount").val()) {
         currentUserId = users[i].id;
       }
@@ -374,8 +377,24 @@ $(() => {
           </li>
         `);
         });
-        console.log(users);
       });
+      // alert
+      $("#successAlert")
+        .html(`<strong>Transaction: ${data[0].transactionType}</strong> has successfully done!
+      <button
+        id="closeAlert"
+        type="button"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      `);
+      $("#successAlert").addClass("show");
+      setTimeout(function () {
+        $("#successAlert").alert("close");
+      }, 2500);
 
       const details = data;
 
