@@ -113,6 +113,10 @@ $(() => {
   });
 
   $("#addCategoryBtn").on("click", function () {
+    if ($("#categoryInput").val() === "") {
+      alert("Invalid category. input value must not be blank.");
+      return;
+    }
     const categoryInputVal = $("#categoryInput").val();
     categoryInputVal.length > 0 &&
       $.ajax({
@@ -133,6 +137,10 @@ $(() => {
 
   $("#newAccount").on("submit", (e) => {
     e.preventDefault();
+    if ($("#accountInfo").val() === "") {
+      alert("Invalid account name. It must not be empty.");
+      return;
+    }
     const inputVal = $("#accountInfo").val();
     let isExisting = false;
     users.forEach((user) => {
@@ -165,9 +173,7 @@ $(() => {
         // original
         // users.push(newUser);
         // test
-        console.log(data);
         users.push(data);
-        console.log(users);
         $(".selectTag").append(new Option(data.username));
         $("#accountSummary").append(`
         <li class="list-group-item">
@@ -175,13 +181,30 @@ $(() => {
           <span>0</span>
         </li>
         `);
+        // set success alert
+        $("#successAlert")
+          .html(`<strong>${data.username}</strong> is added as a new account! Check out account
+        summary.
+        <button
+          id="closeAlert"
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        `);
+        $("#successAlert").addClass("show");
+        setTimeout(function () {
+          $("#successAlert").alert("close");
+        }, 2500);
       });
     $("#accountInfo").val("");
   });
 
   $("#currentAccount").on("change", function () {
     const currentAccountVal = $("#currentAccount").val();
-    console.log(currentAccountVal);
   });
 
   $("#accountSelect").on("change", function () {
@@ -265,7 +288,7 @@ $(() => {
       $("#amount").val() <= 0 ||
       $("#amount").val() === ""
     ) {
-      alert("Invalid transaction");
+      alert("Invalid transaction. Please fill out all sections and try again.");
       return;
     }
 
@@ -274,7 +297,6 @@ $(() => {
     let toUserId;
 
     for (let i = 0; i < users.length; i++) {
-      console.log(users[i]);
       if (users[i].username == $("#currentAccount").val()) {
         currentUserId = users[i].id;
       }
@@ -355,8 +377,24 @@ $(() => {
           </li>
         `);
         });
-        console.log(users);
       });
+      // alert
+      $("#successAlert")
+        .html(`<strong>Transaction: ${data[0].transactionType}</strong> has successfully done!
+      <button
+        id="closeAlert"
+        type="button"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      `);
+      $("#successAlert").addClass("show");
+      setTimeout(function () {
+        $("#successAlert").alert("close");
+      }, 2500);
 
       const details = data;
 
@@ -418,5 +456,16 @@ $(() => {
     $("#toggleSummary").toggle();
     $("#accordionBtnForSummary").toggleClass("hidden");
     $("#upBtnSummary").toggleClass("hidden");
+  });
+
+  // alert
+  // $(document).ready(() => {
+  //   setTimeout(function () {
+  //     $("#successAlert").addClass("show");
+  //   }, 1000);
+  // });
+
+  $("#closeAlert").on("click", function () {
+    $("#successAlert").alert("close");
   });
 });
