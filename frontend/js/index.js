@@ -165,22 +165,6 @@ $(() => {
         dataType: "json",
         contentType: "application/json; charset=utf-8",
       }).done((data) => {
-        // original
-        // create new instance of Account
-        // const newUser = new Account(data.username);
-        // original
-        // $(".selectTag").append(new Option(inputVal));
-        // original
-        // users.push(newUser);
-        // test
-        users.push(data);
-        $(".selectTag").append(new Option(data.username));
-        $("#accountSummary").append(`
-        <li class="list-group-item">
-          <span>${inputVal}</span>
-          <span>0</span>
-        </li>
-        `);
         // set success alert
         $("#successAlert")
           .html(`<strong>${data.username}</strong> is added as a new account! Check out account
@@ -197,8 +181,24 @@ $(() => {
         `);
         $("#successAlert").addClass("show");
         setTimeout(function () {
-          $("#successAlert").alert("close");
+          $("#successAlert").removeClass("show");
         }, 2500);
+        // original
+        // create new instance of Account
+        // const newUser = new Account(data.username);
+        // original
+        // $(".selectTag").append(new Option(inputVal));
+        // original
+        // users.push(newUser);
+        // test
+        users.push(data);
+        $(".selectTag").append(new Option(data.username));
+        $("#accountSummary").append(`
+        <li class="list-group-item">
+          <span>${inputVal}</span>
+          <span>0</span>
+        </li>
+        `);
       });
     $("#accountInfo").val("");
   });
@@ -393,7 +393,7 @@ $(() => {
       `);
       $("#successAlert").addClass("show");
       setTimeout(function () {
-        $("#successAlert").alert("close");
+        $("#successAlert").removeClass("show");
       }, 2500);
 
       const details = data;
@@ -458,14 +458,8 @@ $(() => {
     $("#upBtnSummary").toggleClass("hidden");
   });
 
-  // alert
-  // $(document).ready(() => {
-  //   setTimeout(function () {
-  //     $("#successAlert").addClass("show");
-  //   }, 1000);
-  // });
-
+  // close alert manually
   $("#closeAlert").on("click", function () {
-    $("#successAlert").alert("close");
+    $("#successAlert").removeClass("show");
   });
 });
