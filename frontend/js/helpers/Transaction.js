@@ -6,8 +6,6 @@ class Transaction {
   commit() {
     if (this.value < 0 && this.amount > this.account.balance) return;
     this.account.transactions.push(this.value);
-    console.log("動いてる？？", this.account.transactions);
-    // this.account.balance += this.value;
   }
 }
 
@@ -49,9 +47,6 @@ class Transfer extends Transaction {
           toUser = user;
         }
       });
-      // fromUser.transactions.push(-this.amount);
-      // toUser.transactions.push(this.amount);
-      console.log("行けた？", fromUser, toUser);
     });
   }
   // $.ajax({
