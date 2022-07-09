@@ -1,3 +1,4 @@
+// original
 class Transaction {
   constructor(amount, account) {
     this.amount = amount;
@@ -49,11 +50,4 @@ class Transfer extends Transaction {
       });
     });
   }
-  // $.ajax({
-  //   method: "get",
-  //   url: "http://localhost:3000/accounts",
-  //   dataType: "json",
-  // }).done((data) => {
-  //   console.log(data);
-  // });
 }
