@@ -15,27 +15,26 @@ $(() => {
       $("#accountSelect").append(new Option("all"));
       users = [];
       $.each(data, (i, user) => {
-        let currentBalance = 0;
-        for (let i = 0; i < user.transactions.length; i++) {
-          currentBalance += Number(user.transactions[i].amount);
-        }
-        user.currentBalance = currentBalance;
         users.push(user);
-        $(".selectTag").append(new Option(user.username));
+        const newClassUser = new Account(user.username);
+        newClassUser.transactions = user.transactions;
+        $(".selectTag").append(new Option(newClassUser.username));
         $("#accountSummary").append(`
         <li class="list-group-item">
           <span>Name: </span>
-          <span>${user.username}</span>
-          <span>${
-            // original
-            // user.transactions.length === 0 ? 0 : user.transactions[0].amount
-            user.transactions.length === 0 ? 0 : currentBalance
-          }</span>
+          <span>${newClassUser.username}</span>
+          <span>${newClassUser.balance}</span>
         </li>
       `);
       });
-      console.log(users);
     });
+
+    // <span>${user.username}</span>
+    // <span>${
+    //   // original
+    //   // user.transactions.length === 0 ? 0 : user.transactions[0].amount
+    //   user.transactions.length === 0 ? 0 : currentBalance
+    // }</span>
 
     $.ajax({
       method: "get",
@@ -56,7 +55,6 @@ $(() => {
       dataType: "json",
     }).done((data) => {
       const newData = [];
-      console.log(newData);
       if (data.length > 0) {
         for (const key in data) {
           for (let i = 0; i < data[key].length; i++) {
@@ -85,7 +83,6 @@ $(() => {
   $(".radioBtn").on("change", function () {
     // test
     $(".radioBtn").prop("checked", false);
-    console.log($(this).val());
     if ($(this).val() === "Deposit" || $(this).val() === "Withdraw") {
       $("#currentAccount").show();
       $("#currentAccountLabel").show();
@@ -153,7 +150,7 @@ $(() => {
     });
     // test
     const testUser = new Account(inputVal);
-    console.log(testUser.balance);
+    console.log(testUser, testUser.balance);
     $("#accountInfo").val().length > 0 &&
       !isExisting &&
       $.ajax({
@@ -195,6 +192,7 @@ $(() => {
         $(".selectTag").append(new Option(data.username));
         $("#accountSummary").append(`
         <li class="list-group-item">
+          <span>Name: </span>
           <span>${inputVal}</span>
           <span>0</span>
         </li>
@@ -231,7 +229,6 @@ $(() => {
         const newData = [];
         if (data.length > 0) {
           for (const key in data) {
-            console.log(data[key]);
             for (let i = 0; i < data[key].length; i++) {
               newData.push(data[key][i]);
             }
@@ -295,6 +292,9 @@ $(() => {
     let currentUserId;
     let fromUserId;
     let toUserId;
+    let classCurrUser;
+    let classFromUser;
+    let fromUser;
 
     for (let i = 0; i < users.length; i++) {
       if (users[i].username == $("#currentAccount").val()) {
@@ -319,6 +319,7 @@ $(() => {
       category: $("#categorySelect").val(),
       description: $("#description").val(),
       amount:
+        // $("#amount").val(),
         transactionType === "Withdraw"
           ? -$("#amount").val()
           : $("#amount").val(),
@@ -329,18 +330,26 @@ $(() => {
     const currUser = users.find(
       (user) => user.id === newTransactionObj.accountId
     );
-    let fromUser;
     if (transactionType === "Transfer") {
       fromUser = users.find(
         (user) => user.id === newTransactionObj.accountIdFrom
       );
+      classFromUser = new Account(fromUser.username);
+      classFromUser.transactions = fromUser.transactions;
+    }
+
+    if (currUser) {
+      classCurrUser = new Account(currUser.username);
+      classCurrUser.transactions = currUser.transactions;
     }
 
     if (
       (transactionType === "Withdraw" &&
-        $("#amount").val() > currUser.currentBalance) ||
+        // $("#amount").val() > currUser.currentBalance) ||
+        $("#amount").val() > classCurrUser.balance) ||
       (transactionType === "Transfer" &&
-        $("#amount").val() > fromUser.currentBalance)
+        // $("#amount").val() > fromUser.currentBalance)
+        $("#amount").val() > classFromUser.balance)
     ) {
       alert("Cannot withdraw more than the amount in your account.");
       return;
@@ -354,33 +363,69 @@ $(() => {
       }),
       dataType: "json",
       contentType: "application/json; charset=utf-8",
-    }).done((data) => {
-      // test
+    }).done((transactionData) => {
       $.ajax({
         method: "get",
         url: "http://localhost:3000/accounts",
         dataType: "json",
       }).done((data) => {
         users = [];
+
+        const correspondUser = data.find(
+          (account) => account.id === transactionData[0].accountId
+        );
+        console.log(
+          correspondUser,
+          correspondUser.transactions,
+          correspondUser.balance
+        );
+        const testReduce = correspondUser.transactions.reduce((total, tran) => {
+          return total + Number(tran.amount);
+        }, 0);
+        if (transactionData[0].transactionType === "Deposit") {
+          const newT = new Deposit(transactionData[0].amount, correspondUser);
+        } else if (transactionData[0].transactionType === "Withdraw") {
+          const newT = new Withdrawal(
+            transactionData[0].amount,
+            correspondUser
+          );
+        } else {
+          // const newT = new Withdrawal(transactionData[0].amount, correspondUser);
+          // console.log("uhhhh");
+        }
+
         $("#accountSummary").empty();
         $.each(data, (i, user) => {
-          let currentBalance = 0;
-          for (let i = 0; i < user.transactions.length; i++) {
-            currentBalance += Number(user.transactions[i].amount);
-          }
-          user.currentBalance = currentBalance;
           users.push(user);
+          const newClassUser = new Account(user.username);
+          newClassUser.transactions = user.transactions;
+          // test
+          // $(".selectTag").append(new Option(newClassUser.username));
           $("#accountSummary").append(`
-          <li class="list-group-item">
-            <span>${user.username}</span>
-            <span>${user.transactions.length === 0 ? 0 : currentBalance}</span>
-          </li>
-        `);
+              <li class="list-group-item">
+                <span>Name: </span>
+                <span>${newClassUser.username}</span>
+                <span>${newClassUser.balance}</span>
+              </li>
+            `);
+
+          //   let currentBalance = 0;
+          //   for (let i = 0; i < user.transactions.length; i++) {
+          //     currentBalance += Number(user.transactions[i].amount);
+          //   }
+          //   user.currentBalance = currentBalance;
+          //   $("#accountSummary").append(`
+          //   <li class="list-group-item">
+          //     <span>Name: </span>
+          //     <span>${user.username}</span>
+          //     <span>${user.transactions.length === 0 ? 0 : currentBalance}</span>
+          //   </li>
+          // `);
         });
       });
       // alert
       $("#successAlert")
-        .html(`<strong>Transaction: ${data[0].transactionType}</strong> has successfully done!
+        .html(`<strong>Transaction: ${transactionData[0].transactionType}</strong> has successfully done!
       <button
         id="closeAlert"
         type="button"
@@ -396,7 +441,7 @@ $(() => {
         $("#successAlert").removeClass("show");
       }, 2500);
 
-      const details = data;
+      const details = transactionData;
 
       // test
       $.each(details, (i, data) => {
