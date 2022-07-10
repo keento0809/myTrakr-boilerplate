@@ -32,22 +32,4 @@ class Transfer extends Transaction {
   get value() {
     return this.amount;
   }
-  commitTransfer() {
-    $.ajax({
-      method: "get",
-      url: "http://localhost:3000/accounts",
-      dataType: "json",
-    }).done((usersData) => {
-      let fromUser;
-      let toUser;
-      $.each(usersData, (i, user) => {
-        if (user.id === this.accountIdFrom) {
-          fromUser = user;
-        }
-        if (user.id === this.accountIdTo) {
-          toUser = user;
-        }
-      });
-    });
-  }
 }

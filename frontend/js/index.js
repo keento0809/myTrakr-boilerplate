@@ -288,6 +288,7 @@ $(() => {
       return;
     }
 
+    let currentUser;
     let currentUserId;
     let fromUserId;
     let toUserId;
@@ -298,6 +299,7 @@ $(() => {
     for (let i = 0; i < users.length; i++) {
       if (users[i].username == $("#currentAccount").val()) {
         currentUserId = users[i].id;
+        currentUser = users[i];
       }
       if (users[i].username == $("#fromSelect").val()) {
         fromUserId = users[i].id;
@@ -305,6 +307,15 @@ $(() => {
       if (users[i].username == $("#toSelect").val()) {
         toUserId = users[i].id;
       }
+    }
+    // test
+    let amountVal = 0;
+    if (transactionType === "Deposit") {
+      const newT = new Deposit($("#amount").val(), currentUser);
+      amountVal = newT.value;
+    } else if (transactionType === "Withdraw") {
+      const newT = new Withdrawal($("#amount").val(), currentUser);
+      amountVal = newT.value;
     }
 
     const newTransactionObj = {
@@ -317,11 +328,11 @@ $(() => {
       transactionType: transactionType,
       category: $("#categorySelect").val(),
       description: $("#description").val(),
-      amount:
-        // $("#amount").val(),
-        transactionType === "Withdraw"
-          ? (-$("#amount").val()).toString()
-          : $("#amount").val(),
+      amount: amountVal,
+      // original
+      // transactionType === "Withdraw"
+      //   ? (-$("#amount").val()).toString()
+      //   : $("#amount").val(),
       from: transactionType === "Transfer" ? $("#fromSelect").val() : "",
       to: transactionType === "Transfer" ? $("#toSelect").val() : "",
     };
