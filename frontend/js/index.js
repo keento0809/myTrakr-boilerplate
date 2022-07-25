@@ -9,7 +9,6 @@ $(() => {
       url: "http://localhost:3000/accounts",
       dataType: "json",
     }).done((data) => {
-      // test
       $(".selectTag").append(new Option("select"));
       $("#accountSelect").empty();
       $("#accountSelect").append(new Option("all"));
@@ -28,13 +27,6 @@ $(() => {
       `);
       });
     });
-
-    // <span>${user.username}</span>
-    // <span>${
-    //   // original
-    //   // user.transactions.length === 0 ? 0 : user.transactions[0].amount
-    //   user.transactions.length === 0 ? 0 : currentBalance
-    // }</span>
 
     $.ajax({
       method: "get",
@@ -80,8 +72,8 @@ $(() => {
     });
   });
 
+  // radio button
   $(".radioBtn").on("change", function () {
-    // test
     $(".radioBtn").prop("checked", false);
     if ($(this).val() === "Deposit" || $(this).val() === "Withdraw") {
       $("#currentAccount").show();
@@ -103,35 +95,6 @@ $(() => {
     transactionType = $(this).val();
   });
 
-  $("#categorySelect").on("change", function () {
-    $(this).val() === "Add new.."
-      ? $(".categorySec").show()
-      : $(".categorySec").hide();
-  });
-
-  $("#addCategoryBtn").on("click", function () {
-    if ($("#categoryInput").val() === "") {
-      alert("Invalid category. input value must not be blank.");
-      return;
-    }
-    const categoryInputVal = $("#categoryInput").val();
-    categoryInputVal.length > 0 &&
-      $.ajax({
-        method: "POST",
-        url: "http://localhost:3000/categories",
-        data: JSON.stringify({ newCategory: { name: categoryInputVal } }),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-      }).done((data) => {
-        $("#categorySelect").children("option:last-child").remove();
-        $("#categorySelect").append(new Option(categoryInputVal));
-        $("#categorySelect").append(new Option("Add new.."));
-        $("#categoryInput").val("");
-        $(".categorySec").hide();
-        $("#categorySelect").val("select");
-      });
-  });
-
   $("#newAccount").on("submit", (e) => {
     e.preventDefault();
     if ($("#accountInfo").val() === "") {
@@ -148,7 +111,6 @@ $(() => {
         return;
       }
     });
-    // test
     const testUser = new Account(inputVal);
     $("#accountInfo").val().length > 0 &&
       !isExisting &&
@@ -161,7 +123,6 @@ $(() => {
         dataType: "json",
         contentType: "application/json; charset=utf-8",
       }).done((data) => {
-        // set success alert
         $("#successAlert")
           .html(`<strong>${data.username}</strong> is added as a new account! Check out account
         summary.
@@ -179,14 +140,6 @@ $(() => {
         setTimeout(function () {
           $("#successAlert").removeClass("show");
         }, 2500);
-        // original
-        // create new instance of Account
-        // const newUser = new Account(data.username);
-        // original
-        // $(".selectTag").append(new Option(inputVal));
-        // original
-        // users.push(newUser);
-        // test
         users.push(data);
         $(".selectTag").append(new Option(data.username));
         $("#accountSummary").append(`
@@ -200,9 +153,9 @@ $(() => {
     $("#accountInfo").val("");
   });
 
-  $("#currentAccount").on("change", function () {
-    const currentAccountVal = $("#currentAccount").val();
-  });
+  // $("#currentAccount").on("change", function () {
+  //   const currentAccountVal = $("#currentAccount").val();
+  // });
 
   $("#accountSelect").on("change", function () {
     const defaultHTML = `
@@ -253,7 +206,6 @@ $(() => {
       const selectedUser = users.find(
         (user) => user.username === $("#accountSelect").val()
       );
-      // original
       $.each(selectedUser.transactions, (i, data) => {
         $("#transactionTable").append(`
             <tr scope="row">
@@ -316,6 +268,8 @@ $(() => {
     } else if (transactionType === "Withdraw") {
       const newT = new Withdrawal($("#amount").val(), currentUser);
       amountVal = newT.value;
+    } else {
+      amountVal = $("#amount").val();
     }
 
     const newTransactionObj = {
@@ -329,10 +283,6 @@ $(() => {
       category: $("#categorySelect").val(),
       description: $("#description").val(),
       amount: amountVal,
-      // original
-      // transactionType === "Withdraw"
-      //   ? (-$("#amount").val()).toString()
-      //   : $("#amount").val(),
       from: transactionType === "Transfer" ? $("#fromSelect").val() : "",
       to: transactionType === "Transfer" ? $("#toSelect").val() : "",
     };
@@ -340,17 +290,18 @@ $(() => {
     const currUser = users.find(
       (user) => user.id === newTransactionObj.accountId
     );
+
+    if (currUser) {
+      classCurrUser = new Account(currUser.username);
+      classCurrUser.transactions = currUser.transactions;
+    }
+
     if (transactionType === "Transfer") {
       fromUser = users.find(
         (user) => user.id === newTransactionObj.accountIdFrom
       );
       classFromUser = new Account(fromUser.username);
       classFromUser.transactions = fromUser.transactions;
-    }
-
-    if (currUser) {
-      classCurrUser = new Account(currUser.username);
-      classCurrUser.transactions = currUser.transactions;
     }
 
     if (
@@ -393,7 +344,6 @@ $(() => {
             `);
         });
       });
-      // alert
       $("#successAlert")
         .html(`<strong>Transaction: ${transactionData[0].transactionType}</strong> has successfully done!
       <button
@@ -413,7 +363,6 @@ $(() => {
 
       const details = transactionData;
 
-      // test
       $.each(details, (i, data) => {
         $("#transactionTable").append(`
         <tr scope="row">
@@ -439,42 +388,5 @@ $(() => {
       $("#amount").val("");
       $(".radioBtn").prop("checked", false);
     });
-  });
-
-  // jQuery regarding css accordionBtnForTransac
-  $("#accordionBtn").on("click", function () {
-    $("#toggleNewAccountForm").toggle();
-    $("#accordionBtn").toggleClass("hidden");
-    $("#upBtnNewAccount").toggleClass("hidden");
-  });
-  $("#upBtnNewAccount").on("click", function () {
-    $("#toggleNewAccountForm").toggle();
-    $("#accordionBtn").toggleClass("hidden");
-    $("#upBtnNewAccount").toggleClass("hidden");
-  });
-  $("#accordionBtnForTransac").on("click", function () {
-    $("#toggleTransac").toggle();
-    $("#accordionBtnForTransac").toggleClass("hidden");
-    $("#upBtnTransac").toggleClass("hidden");
-  });
-  $("#upBtnTransac").on("click", function () {
-    $("#toggleTransac").toggle();
-    $("#accordionBtnForTransac").toggleClass("hidden");
-    $("#upBtnTransac").toggleClass("hidden");
-  });
-  $("#accordionBtnForSummary").on("click", function () {
-    $("#toggleSummary").toggle();
-    $("#accordionBtnForSummary").toggleClass("hidden");
-    $("#upBtnSummary").toggleClass("hidden");
-  });
-  $("#upBtnSummary").on("click", function () {
-    $("#toggleSummary").toggle();
-    $("#accordionBtnForSummary").toggleClass("hidden");
-    $("#upBtnSummary").toggleClass("hidden");
-  });
-
-  // close alert manually
-  $("#closeAlert").on("click", function () {
-    $("#successAlert").removeClass("show");
   });
 });
