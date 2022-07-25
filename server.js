@@ -8,10 +8,15 @@ import { addCategory, getCategories } from "./src/categories.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-const port = 3000;
+app.use(express.static("docs"));
+// app.use(express.urlencoded({ extended: false }));
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+app.get("/", (req, res) => {
+  res.send("Hello");
 });
 
 // read accounts
